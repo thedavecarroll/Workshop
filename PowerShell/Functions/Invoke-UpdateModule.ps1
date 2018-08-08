@@ -67,7 +67,7 @@ function Invoke-UpdateModule {
                         $UpdateModules += Update-Module -Name $ModuleName @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
                     }
                     catch {
-                        Write-Verbose -Message $_.ToString()
+                        Write-Warning -Message $_.ToString()
                     }
                 }
             } else {
@@ -75,7 +75,7 @@ function Invoke-UpdateModule {
                     $UpdateModules = Update-Module @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
                 }
                 catch {
-                    Write-Verbose -Message $_.ToString()
+                    Write-Warning -Message $_.ToString()
                 }
             }
         } else {
