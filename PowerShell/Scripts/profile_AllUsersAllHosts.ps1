@@ -9,14 +9,13 @@ $FunctionPath = "D:\Development\PowerShell\Functions"
 Get-ChildItem $FunctionPath -Recurse -File | Where-Object { $_.Name -like '*.ps1' -And $_.Name -notlike "__*" } | ForEach-Object { . $_.FullName }
 
 # extend Module Path for Local Repository
-$ModulePath = "C:\Powershell\Modules"
+$ModulePath = "D:\Development\PowerShell\Modules"
 $machinePath = [Environment]::GetEnvironmentVariable('PSModulePath', [System.EnvironmentVariableTarget]::Machine)
 if($machinePath.Contains($ModulePath) -eq $false) {
 	$machinePath += ";$ModulePath"
     [Environment]::SetEnvironmentVariable('PSModulePath', $machinePath, [System.EnvironmentVariableTarget]::Machine)
     $env:PSModulePath += ";$ModulePath"
 }
-
 
 # -----------------------------------------------------------------------------
 # Customize the console window
