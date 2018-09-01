@@ -4,11 +4,11 @@ $ChromeInstaller = "ChromeInstaller.exe"
 & "$LocalTempDir\$ChromeInstaller" /silent /install
 $Process2Monitor =  "ChromeInstaller"
 Do { 
-    $ProcessesFound = Get-Process | ?{ $Process2Monitor -contains $_.Name} | Select-Object -ExpandProperty Name
+    $ProcessesFound = Get-Process | Where-Object{ $Process2Monitor -contains $_.Name} | Select-Object -ExpandProperty Name
     If ($ProcessesFound) { 
         "Still running: $($ProcessesFound -join ', ')" | Write-Host
         Start-Sleep -Seconds 2
      } else { 
-        rm "$LocalTempDir\$ChromeInstaller" -ErrorAction SilentlyContinue -Verbose 
+        Remove-Item "$LocalTempDir\$ChromeInstaller" -ErrorAction SilentlyContinue -Verbose 
      } 
 } Until (!$ProcessesFound)
