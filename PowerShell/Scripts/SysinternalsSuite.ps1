@@ -68,7 +68,7 @@ function Update-Sysinternals {
 
     if (-Not $IgnoreDownloadErrors) {
         Write-Verbose -Message 'Checking for previous download errors.'
-        $SkipFiles = Get-Content -Path $DownloadErrorsPath | ConvertFrom-Json
+        $SkipFiles = Get-Content -Path $DownloadErrorsPath -ErrorAction SilentlyContinue | ConvertFrom-Json
     }
 
     Write-Verbose -Message 'Getting current Sysinternals file list.'
@@ -137,6 +137,7 @@ function Update-Sysinternals {
         }
     }
 
+    Write-Output ''
     Write-Output "Downloaded $Count Sysinternals tools"
 
     if ($Count -gt 0) {
