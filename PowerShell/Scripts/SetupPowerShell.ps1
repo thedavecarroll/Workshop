@@ -1,6 +1,7 @@
 ﻿
 $ScriptsToInstall = 'Install-VSCode','Install-Git'
-$ModulesToInstall = 'PoShEvents','PoShGroupPolicy','ImportExcel','Plaster','PSake'
+$ModulesToInstall = 'PoShEvents','PoShGroupPolicy','ImportExcel','Plaster','PSake','platyPS','BuildHelpers','Pester',
+    'Posh-Git','PoshRSJob','PSDeploy','PSScriptAnalyzer','PSCodeHealth','Posh-SSH'
 
 Update-Module -Verbose
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
