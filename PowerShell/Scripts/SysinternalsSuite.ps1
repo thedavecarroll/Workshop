@@ -137,8 +137,10 @@ function Update-Sysinternals {
         }
     }
 
-    Write-Output ''
-    Write-Output "Downloaded $Count Sysinternals tools"
+    if ($Count -gt 0 ) {
+        Write-Output ''
+        Write-Output "Downloaded $Count Sysinternals tools"
+    }
 
     if ($Count -gt 0) {
         Write-Output ''
