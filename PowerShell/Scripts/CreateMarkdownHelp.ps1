@@ -48,7 +48,7 @@ foreach ($Command in (Get-Command -Module $ModuleName)) {
         'permalink' = "/$Link"
     }
 
-    $OnlineVersionUri = "https://powershell.anovelidea.org/$Link)"
+    $OnlineVersionUri = "https://powershell.anovelidea.org/$Link"
 
     $NewMarkdownHelpParams = @{
         Command             = $Command
