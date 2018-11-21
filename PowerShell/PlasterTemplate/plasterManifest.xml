@@ -1,112 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plasterManifest schemaVersion="0.4" xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
     <metadata>
-        <id>dcd95744-8abc-4ecb-a439-bf2cd37821bb</id>
-        <name>NewModule</name>
-        <title>New Module</title>
-        <description>Scaffolds the files required for a PowerShell module.</description>
+        <id>adf7cc44-d5ad-4a77-a699-97176847666e</id>
+        <name>PlasterTemplate</name>
+        <title>New Module Template - Plaster</title>
+        <description>Scaffolds the files required for a PowerShell script module.</description>
+        <author>Dave Carroll</author>
         <version>1.0.0</version>
         <tags>Module, ModuleManifest, Build</tags>
     </metadata>
-
     <parameters>
         <parameter name='ModuleName'
-                   type='text'
-                   prompt='Enter the name of the module'/>
+                type='text'
+                prompt='Enter the name of the module'/>
 
         <parameter name='ModuleDesc'
-                   type='text'
-                   prompt='Enter a description of the module (required for publishing to the PowerShell Gallery)'/>
+                type='text'
+                prompt='Enter a description of the module (required for publishing to the PowerShell Gallery)'/>
 
         <parameter name='Version'
-                   type='text'
-                   prompt='Enter the version number of the module'
-                   default='0.1.0'/>
+                type='text'
+                prompt='Enter the version number of the module'
+                default='0.1.0'/>
+
+        <parameter name='PowerShellVersion'
+                type='text'
+                prompt='Minimum PowerShell Version'
+                default='None'/>
+
+        <parameter name='CompatiblePSEditions'
+                type='choice'
+                prompt='Supported PowerShell Edition'
+                default='0'
+                store='text' >
+                <choice label='&amp;Desktop'
+                        help='Windows PowerShell'
+                        value="'Desktop'"/>
+                <choice label='&amp;Core'
+                        help='PowerShell Core'
+                        value="'Core'"/>
+                <choice label='&amp;Both'
+                        help='Supports Both'
+                        value="'Desktop','Core'"/>
+        </parameter>
 
         <parameter name='FullName'
-                   type='user-fullname'
-                   prompt='Enter your full name'
-                   store='text' />
+                type='user-fullname'
+                prompt='Enter your full name'
+                store='text' />
+
+        <parameter name='Company'
+                type='text'
+                default='Unknown'
+                prompt='Enter the name of your company' />
 
         <parameter name='License'
-                   type='choice'
-                   prompt='Select a license (see http://choosealicense.com for help choosing):'
-                   default='0'
-                   store='text'>
-            <choice label='&amp;None'
-                    help="No license."
-                    value="None"/>
-            <choice label='&amp;Apache'
-                    help="Adds an Apache license file."
-                    value="Apache"/>
-            <choice label='&amp;MIT'
-                    help="Adds an MIT license file."
-                    value="MIT"/>
+                type='choice'
+                prompt='Select a license (see http://choosealicense.com for help choosing):'
+                default='0'
+                store='text'>
+                <choice label='&amp;None'
+                        help="No license."
+                        value="None"/>
+                <choice label='&amp;Apache'
+                        help="Adds an Apache license file."
+                        value="Apache"/>
+                <choice label='&amp;MIT'
+                        help="Adds an MIT license file."
+                        value="MIT"/>
         </parameter>
 
         <parameter name='Options'
-                   type='multichoice'
-                   prompt='Select one or more of the following tooling options:'
-                   default='1,2,3,4'
-                   store='text' >
-            <choice label='&amp;None'
-                    help="No tooling options specified."
-                    value="None"/>
-            <choice label='Add &amp;Git .gitignore file'
-                    help="Adds a .gitignore file."
-                    value="Git"/>
-            <choice label='Add p&amp;sake build script'
-                    help="Adds psake build script that generates the module directory for publishing to the PowerShell Gallery."
-                    value="psake"/>
-            <choice label='Add &amp;Pester test support'
-                    help="Adds test directory and Pester test for the module manifest file."
-                    value="Pester"/>
-            <choice label='Add PSScript&amp;Analyzer support'
-                    help="Adds script analysis support using PSScriptAnalyzer."
-                    value="PSScriptAnalyzer"/>
-            <choice label='Add plat&amp;yPS help generation support'
-                    help="Adds help build support using platyPS."
-                    value="platyPS"/>
+                type='multichoice'
+                prompt='Select one or more of the following tooling options:'
+                default='1,2,3,4'
+                store='text' >
+                <choice label='&amp;None'
+                        help="No tooling options specified."
+                        value="None"/>
+                <choice label='Add &amp;Git .gitignore file'
+                        help="Adds a .gitignore file."
+                        value="Git"/>
+                <choice label='Add p&amp;sake build script'
+                        help="Adds psake build script that generates the module directory for publishing to the PowerShell Gallery."
+                        value="psake"/>
+                <choice label='Add &amp;Pester test support'
+                        help="Adds test directory and Pester test for the module manifest file."
+                        value="Pester"/>
+                <choice label='Add PSScript&amp;Analyzer support'
+                        help="Adds script analysis support using PSScriptAnalyzer."
+                        value="PSScriptAnalyzer"/>
+                <choice label='Add plat&amp;yPS help generation support'
+                        help="Adds help build support using platyPS."
+                        value="platyPS"/>
         </parameter>
 
         <parameter name='Editor'
-                   type='choice'
-                   prompt='Select one of the supported script editors for better editor integration (or None):'
-                   default='0'
-                   store='text' >
-            <choice label='&amp;None'
-                    help="No editor specified."
-                    value="None"/>
-            <choice label='Visual Studio &amp;Code'
-                    help="Your editor is Visual Studio Code."
-                    value="VSCode"/>
+                type='choice'
+                prompt='Select one of the supported script editors for better editor integration (or None):'
+                default='0'
+                store='text' >
+                <choice label='&amp;None'
+                        help="No editor specified."
+                        value="None"/>
+                <choice label='Visual Studio &amp;Code'
+                        help="Your editor is Visual Studio Code."
+                        value="VSCode"/>
         </parameter>
+
     </parameters>
 
     <content>
         <message>&#10;&#10;Scaffolding your PowerShell Module...&#10;&#10;&#10;</message>
 
-        <newModuleManifest destination='${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.psd1'
-                           moduleVersion='$PLASTER_PARAM_Version'
-                           rootModule='${PLASTER_PARAM_ModuleName}.psm1'
-                           author='$PLASTER_PARAM_FullName'
-                           description='$PLASTER_PARAM_ModuleDesc'
-                           encoding='UTF8-NoBOM'/>
+        <file source='ReleaseNotes.md'
+              destination=''/>
+        <file source='CHANGELOG.md'
+              destination=''/>
+        <file source='README.md'
+              destination=''/>
 
         <file condition='$PLASTER_PARAM_Options -contains "Git"'
               source='_gitignore'
               destination='.gitignore' />
+
         <file condition='$PLASTER_PARAM_Options -contains "psake"'
               source='build*.ps1'
               destination='' />
-        <file source='ReleaseNotes.md'
-              destination=''/>
-        <file source='src\Module.psm1'
-              destination='${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.psm1'/>
-        <file source='ScriptAnalyzerSettings.psd1'
-              destination=''/>
+        <file condition='$PLASTER_PARAM_Options -contains "psake"'
+              source='Requirements.psd1'
+              destination='' />
 
-        <file source='' destination='spec'/>
+        <file condition='$PLASTER_PARAM_Options -contains "pester"'
+              source='ScriptAnalyzerSettings.psd1'
+              destination='' />
+
+        <file source='source\Module.psm1'
+              destination='${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.psm1'/>
+
+        <!-- Don't use Gherkin Specifications -->
+        <!-- <file source='' destination='spec'/> -->
         <file source='' destination='${PLASTER_PARAM_ModuleName}\Public'/>
         <file source='' destination='${PLASTER_PARAM_ModuleName}\Private'/>
         <file source='' destination='${PLASTER_PARAM_ModuleName}\Classes'/>
@@ -121,11 +154,11 @@
                       source='docs\en-US\about_Module.help.txt'
                       destination='${PLASTER_PARAM_ModuleName}\en-US\about_${PLASTER_PARAM_ModuleName}.help.txt'/>
         <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'"
-                      source='test\Module.T.ps1'
-                      destination='tests\${PLASTER_PARAM_ModuleName}.Tests.ps1' />
+                      source='Tests\Module.T.ps1'
+                      destination='Tests\${PLASTER_PARAM_ModuleName}.Tests.ps1' />
         <templateFile condition="$PLASTER_PARAM_Options -contains 'Pester'"
-                      source='test\Shared.ps1'
-                      destination='tests\Shared.ps1' />
+                      source='Tests\Shared.ps1'
+                      destination='Tests\Shared.ps1' />
         <templateFile condition="$PLASTER_PARAM_License -eq 'Apache'"
                       source='license\Apache.txt'
                       destination='LICENSE'
@@ -161,6 +194,49 @@
 
         <requireModule name="platyPS" condition='$PLASTER_PARAM_Options -contains "platyPS"' minimumVersion="0.7.2"
             message="Without platyPS, you will not be able to generate PowerShell external help for your module using markdown."/>
+
+        <newModuleManifest
+                destination='${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.psd1'
+                moduleVersion='$PLASTER_PARAM_Version'
+                rootModule='${PLASTER_PARAM_ModuleName}.psm1'
+                author='$PLASTER_PARAM_FullName'
+                description='$PLASTER_PARAM_ModuleDesc'
+                encoding='UTF8-NoBOM'/>
+
+        <message>&#10;Setting Company              ['$PLASTER_PARAM_Company']&#10;&#10;</message>
+        <message>&#10;Setting PowerShellVersion    ['$PLASTER_PARAM_PowerShellVersion']&#10;&#10;</message>
+        <message>&#10;Setting CompatiblePSEditions ['$PLASTER_PARAM_CompatiblePSEditions']&#10;&#10;</message>
+
+        <modify path="${PLASTER_PARAM_ModuleName}\${PLASTER_PARAM_ModuleName}.psd1">
+                <replace>
+                        <original>CompanyName = 'Unknown'</original>
+                        <substitute expand='true'>CompanyName = '$PLASTER_PARAM_Company'</substitute>
+                </replace>
+                <replace condition="$PLASTER_PARAM_PowerShellVersion -ne 'None'">
+                        <original># PowerShellVersion = ''</original>
+                        <substitute expand='true'>PowerShellVersion = '$PLASTER_PARAM_PowerShellVersion'</substitute>
+                </replace>
+                <replace>
+                        <original># CompatiblePSEditions = @(\(\))</original>
+                        <substitute expand='true'>CompatiblePSEditions = @($PLASTER_PARAM_CompatiblePSEditions)</substitute>
+                </replace>
+                <replace>
+                        <original>FunctionsToExport = '*'</original>
+                        <substitute># FunctionsToExport = '*'</substitute>
+                </replace>
+                <replace>
+                        <original>CmdletsToExport = '*'</original>
+                        <substitute># CmdletsToExport = '*'</substitute>
+                </replace>
+                <replace>
+                        <original>VariablesToExport = '*'</original>
+                        <substitute># VariablesToExport = '*'</substitute>
+                </replace>
+                <replace>
+                        <original>AliasesToExport = '*'</original>
+                        <substitute># AliasesToExport = '*'</substitute>
+                </replace>
+        </modify>
 
         <message>
 
