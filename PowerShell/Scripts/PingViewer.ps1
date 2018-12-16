@@ -304,8 +304,6 @@ $LoadFile_OnClick = [scriptblock]::Create({
         $Script:OriginalPingView = $PingView
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Input File:' -Progress $Script:Progress
         $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
-        $DataGridView.Add_CellValueChanged({$PingViewer.AutoSizeChanged})
-#        $PingViewer = Set-WindowsForm -WindowsForm $PingViewer -HeaderWidth $DataGridView.RowHeadersWidth
         $PingViewer.Refresh()
     } else {
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'No file selected'
@@ -344,15 +342,9 @@ $Form_OnLoad = [scriptblock]::Create({
             $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Hostnames Provided:' -Progress $ComputerName.Count
         }
         $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
-        $DataGridView.Add_CellValueChanged({$PingViewer.AutoSizeChanged})
         $PingViewer.Refresh()
     }
 })
-$DataGridView_Refresh = [scriptblock]::Create({
-    $DataGridView.Add_CellValueChanged($P)
-    $PingViewer.Refresh()
-})
-
 #endregion event script blocks
 
 # build form
