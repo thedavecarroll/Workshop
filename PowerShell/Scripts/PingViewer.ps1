@@ -234,6 +234,16 @@ switch ($PSCmdlet.ParameterSetName) {
 
 }
 
+$RowHighlight = @{
+    'Cell' = 'Status'
+    'Values' = @{
+        'NA' = 'LightGray'
+        'Failure' = 'Red'
+        'Success' = 'White'
+        'Default' = 'Red'
+    }
+}
+
 #region event scriptblocks
 $CloseButton_OnClick = [scriptblock]::Create({
     $PingViewer.Close()
@@ -251,7 +261,7 @@ $RefreshButton_OnClick = [scriptblock]::Create({
         } elseif ($ComputerName) {
             $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Hostnames Provided:' -Progress $ComputerName.Count
         }
-        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
+        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView -RowHighlight $RowHighlight
         $PingViewer.Refresh()
     } else {
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Nothing to refresh'
@@ -275,7 +285,7 @@ $ResetCounters_OnClick = [scriptblock]::Create({
         } elseif ($ComputerName) {
             $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Hostnames Provided:' -Progress $ComputerName.Count
         }
-        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
+        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView -RowHighlight $RowHighlight
         $PingViewer.Refresh()
     } else {
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip  -Operation 'No counters to reset'
@@ -303,7 +313,7 @@ $LoadFile_OnClick = [scriptblock]::Create({
         $Script:PingView = $DnsHostName | Invoke-PingView
         $Script:OriginalPingView = $PingView
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Input File:' -Progress $Script:Progress
-        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
+        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView -RowHighlight $RowHighlight
         $PingViewer.Refresh()
     } else {
         $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'No file selected'
@@ -341,7 +351,7 @@ $Form_OnLoad = [scriptblock]::Create({
         } elseif ($ComputerName) {
             $StatusStrip = Set-StatusStrip -StatusStrip $StatusStrip -Operation 'Hostnames Provided:' -Progress $ComputerName.Count
         }
-        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView
+        $DataGridView = Update-DataGridView -Data $PingView -DataGridView $DataGridView -RowHighlight $RowHighlight
         $PingViewer.Refresh()
     }
 })

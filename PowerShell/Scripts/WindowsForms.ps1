@@ -179,13 +179,30 @@ function New-DataGridView {
 function Update-DataGridView {
     [CmdLetBinding()]
     param(
-        $Data,
-        $DataGridView
+        [object]$Data,
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [hashtable]$RowHighlight
     )
     try {
         $GridData = [System.Collections.ArrayList]::new()
         $GridData.AddRange(@($Data))
         $DataGridView.DataSource = $GridData
+
+        if ($RowHighlight) {
+            $Cell = $RowHighlight['Cell']
+            foreach ($Row in $DataGridView.Rows) {
+                [string]$CellValue = $Row.Cells[$Cell].Value
+                Write-Verbose ($CellValue.Gettype()) -Verbose
+                if ($RowHighlight['Values'].ContainsKey($CellValue)) {
+                    Write-Verbose "Setting row based on $Cell cell of $CellValue to $($RowHighlight['Values'][$CellValue]) color" -Verbose
+                    $Row.DefaultCellStyle.BackColor = $RowHighlight['Values'][$CellValue]
+                } else {
+                    Write-Verbose "Setting $Cell cell for $CellValue to $($RowHighlight['Values'].Default) color" -Verbose
+                    $Row.DefaultCellStyle.BackColor = $RowHighlight['Values']['Default']
+                }
+            }
+        }
+
         $DataGridView
     }
     catch {
