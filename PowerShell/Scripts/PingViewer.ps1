@@ -20,7 +20,7 @@ param(
 # dot source or create required functions
 # ----------------------------------------------------------------------------------------------------------------------
 
-. D:\GitHub\Workshop\PowerShell\Scripts\WindowsForms.ps1
+Import-Module D:\GitHub\Workshop\PowerShell\Scripts\WindowsForms.psm1
 
 #region Resolve-DNSHostName
 function Resolve-DNSHostName {

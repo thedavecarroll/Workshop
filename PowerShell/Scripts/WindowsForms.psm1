@@ -2,24 +2,27 @@
 # Function required to create PowerShell GUI using System.Windows.Forms
 # ----------------------------------------------------------------------------------------------------------------------
 
+#region load assemblies
+try {
+    [Void][reflection.assembly]::loadwithpartialname('System.Windows.Forms')
+    [Void][reflection.assembly]::loadwithpartialname('System.Drawing')
+}
+catch {
+    Write-Warning -Message 'Unable to load required assemblies'
+    return
+}
+#endregion load assemblies
+
 #region New-WindowsForm
 function New-WindowsForm {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.Form])]
     param(
         [string]$Name,
         [int]$Width,
         [int]$Height,
         [switch]$NoIcon
     )
-
-    try {
-        [Void][reflection.assembly]::loadwithpartialname('System.Windows.Forms')
-        [Void][reflection.assembly]::loadwithpartialname('System.Drawing')
-    }
-    catch {
-        Write-Warning -Message 'Unable to load required assemblies'
-        return
-    }
 
     try {
         $WindowsForm = [System.Windows.Forms.Form]::new()
@@ -76,6 +79,7 @@ function New-DrawingColor {
 #region New-FormLabel
 function New-FormLabel {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.Label])]
     param(
         [string]$Name,
         [int]$Index,
@@ -111,6 +115,7 @@ function New-FormLabel {
 #region New-FormButton
 function New-FormButton {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.Button])]
     param(
         [string]$Name,
         [int]$Index,
@@ -145,6 +150,7 @@ function New-FormButton {
 #region New-DataGridView
 function New-DataGridView {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.DataGridView])]
     param(
         [string]$Name,
         [int]$Index,
@@ -178,6 +184,7 @@ function New-DataGridView {
 #region Update-DataGridView
 function Update-DataGridView {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.DataGridView])]
     param(
         [object]$Data,
         [System.Windows.Forms.DataGridView]$DataGridView,
@@ -192,12 +199,12 @@ function Update-DataGridView {
             $Cell = $RowHighlight['Cell']
             foreach ($Row in $DataGridView.Rows) {
                 [string]$CellValue = $Row.Cells[$Cell].Value
-                Write-Verbose ($CellValue.Gettype()) -Verbose
+                Write-Verbose ($CellValue.Gettype())
                 if ($RowHighlight['Values'].ContainsKey($CellValue)) {
-                    Write-Verbose "Setting row based on $Cell cell of $CellValue to $($RowHighlight['Values'][$CellValue]) color" -Verbose
+                    Write-Verbose "Setting row based on $Cell cell of $CellValue to $($RowHighlight['Values'][$CellValue]) color"
                     $Row.DefaultCellStyle.BackColor = $RowHighlight['Values'][$CellValue]
-                } else {
-                    Write-Verbose "Setting $Cell cell for $CellValue to $($RowHighlight['Values'].Default) color" -Verbose
+                } elseif ($RowHighlight['Values'].ContainsKey('Default')) {
+                    Write-Verbose "Setting $Cell cell for $CellValue to $($RowHighlight['Values'].Default) color"
                     $Row.DefaultCellStyle.BackColor = $RowHighlight['Values']['Default']
                 }
             }
@@ -214,6 +221,7 @@ function Update-DataGridView {
 #region New-StatusStrip
 function New-StatusStrip {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.StatusStrip])]
     param()
 
     try {
@@ -262,6 +270,7 @@ function New-StatusStrip {
 #region Set-StatusStrip
 function Set-StatusStrip {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.StatusStrip])]
     param(
         [System.Windows.Forms.StatusStrip]$StatusStrip,
         [string]$Operation = $null,
@@ -311,6 +320,7 @@ function Set-StatusStrip {
 #region Set-WindowsForm
 function Set-WindowsForm {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.Form])]
     param(
         [Parameter(Mandatory=$true)]
         [System.Windows.Forms.Form]$WindowsForm,
@@ -346,6 +356,8 @@ function Set-WindowsForm {
         if ($PSBoundParameters.Keys -contains 'HeaderWidth') {
             $WindowsForm.Width = $HeaderWidth + 5
         }
+        $WindowsForm.StartPosition = 1
+
         $WindowsForm
     }
     catch {
@@ -354,9 +366,10 @@ function Set-WindowsForm {
 }
 #endregion Set-WindowsForm
 
-#region Get-FileName
-function Get-FileName {
+#region Get-OpenFileDialog
+function Get-OpenFileDialog {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.OpenFileDialog])]
     param (
         [string]$StartingFolder = (Join-Path -Path $env:HOMEDRIVE -ChildPath $env:HOMEPATH),
         [string]$Filter = 'All files (*.*)|*.*'
@@ -373,11 +386,12 @@ function Get-FileName {
         $PSCmdlet.ThrowTerminatingError($_)
     }
 }
-#endregion Get-FileName
+#endregion Get-OpenFileDialog
 
-#region Set-SaveFileName
-function Set-SaveFileName {
+#region Set-SaveFileDialog
+function Set-SaveFileDialog {
     [CmdLetBinding()]
+    [OutputType([System.Windows.Forms.SaveFileDialog])]
     param (
         [string]$StartingFolder = (Join-Path -Path $env:HOMEDRIVE -ChildPath $env:HOMEPATH),
         [string]$Filter = 'All files (*.*)|*.*'
@@ -395,34 +409,6 @@ function Set-SaveFileName {
         $PSCmdlet.ThrowTerminatingError($_)
     }
 }
-#endregion Set-SaveFileName
+#endregion Set-SaveFileDialog
 
-#region New-FormTimer
-function New-FormTimer {
-
-}
-#endregion New-FormTimer
-<#
-
-private void timer1_Tick(object sender, EventArgs e)
-{
-    if (timeLeft > 0)
-    {
-        // Display the new time left
-        // by updating the Time Left label.
-        timeLeft = timeLeft - 1;
-        timeLabel.Text = timeLeft + " seconds";
-    }
-    else
-    {
-        // If the user ran out of time, stop the timer, show
-        // a MessageBox, and fill in the answers.
-        timer1.Stop();
-        timeLabel.Text = "Time's up!";
-        MessageBox.Show("You didn't finish in time.", "Sorry!");
-        sum.Value = addend1 + addend2;
-        startButton.Enabled = true;
-    }
-}
-
-#>
+Export-ModuleMember -Function New-WindowsForm,Set-WindowsForm,New-FormLabel,New-FormButton,New-DataGridView,Update-DataGridView,New-StatusStrip,Set-StatusStrip,Get-OpenFileDialog,Set-SaveFileDialog
