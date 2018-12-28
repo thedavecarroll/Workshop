@@ -411,4 +411,29 @@ function Set-SaveFileDialog {
 }
 #endregion Set-SaveFileDialog
 
-Export-ModuleMember -Function New-WindowsForm,Set-WindowsForm,New-FormLabel,New-FormButton,New-DataGridView,Update-DataGridView,New-StatusStrip,Set-StatusStrip,Get-OpenFileDialog,Set-SaveFileDialog
+#region Show-DialogBox
+function Show-DialogBox {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Text,
+        [Parameter(Mandatory=$false)]
+        [string]$Caption,
+        [Parameter(Mandatory=$false)]
+        [ValidateSet('AbortRetryIgnore','OK','OKCancel','RetryCancel','YesNo','YesNoCancel')]
+        [string]$MessageBoxButtons='OK',
+        [Parameter(Mandatory=$false)]
+        [ValidateSet('Asterisk','Error','Exclamation','Hand','Information','None','Question','Stop','Warning')]
+        [string]$MessageBoxIcon='None',
+        [Parameter(Mandatory=$false)]
+        [ValidateSet('Button1','Button2','Button3')]
+        [string]$MessageBoxDefaultButton='Button1',
+        [Parameter(Mandatory=$false)]
+        [bool]$Silent=$true
+    )
+
+    [System.Windows.Forms.MessageBox]::Show($Text,$Caption,$MessageBoxButtons,$MessageBoxIcon,$MessageBoxDefaultButton)
+}
+#endregion Show-DialogBox
+
+Export-ModuleMember -Function New-WindowsForm,Set-WindowsForm,New-FormLabel,New-FormButton,New-DataGridView,Update-DataGridView,New-StatusStrip,Set-StatusStrip,Get-OpenFileDialog,Set-SaveFileDialog,Show-DialogBox
