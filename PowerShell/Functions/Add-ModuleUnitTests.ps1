@@ -31,7 +31,7 @@ Describe 'MODULECOMMAND' {
         $FunctionName = $Function.BaseName
         $Command = Get-Command -Name $FunctionName
         if ($Command.CommandType -eq 'Function') {
-            $TestScriptPath = Join-Path -Path $ProjectPath -ChildPath 'Tests' | Join-Path -ChildPath 'Unit' | Join-Path -ChildPath "$FunctionName.Test.ps1"
+            $TestScriptPath = Join-Path -Path $ProjectPath -ChildPath 'Tests' | Join-Path -ChildPath 'Unit' | Join-Path -ChildPath "$FunctionName.Tests.ps1"
             try {
                 $null = New-Item -Path $TestScriptPath -ItemType File -Force
                 $null = Set-Content -Path $TestScriptPath -Value $DefaultContent.Replace('MODULECOMMAND',$FunctionName).Replace('MODULENAME',$env:BHProjectName) -Encoding UTF8
