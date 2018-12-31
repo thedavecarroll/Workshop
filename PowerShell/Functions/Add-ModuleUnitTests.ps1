@@ -47,10 +47,15 @@ Describe -Name 'MODULECOMMAND' -Tag 'Unit','UNITTYPE' {
             } else {
                 $UnitType = 'Private'
             }
+
             $TestScriptPath = Join-Path -Path $BaseTestScriptPath -ChildPath $UnitType | Join-Path -ChildPath "$FunctionName.Tests.ps1"
             try {
+                $UpdatedContent = $DefaultContent.Replace('MODULECOMMAND',$FunctionName)
+                $UpdatedContent = $UpdatedContent.Replace('MODULENAME',$env:BHProjectName)
+                $UpdatedContent = $UpdatedContent.Replace('UNITTYPE',$UnitType)
+
                 $null = New-Item -Path $TestScriptPath -ItemType File -Force
-                $null = Set-Content -Path $TestScriptPath -Value $DefaultContent.Replace('MODULECOMMAND',$FunctionName).Replace('MODULENAME',$env:BHProjectName).Replace('UNITTYPE',$UnitType) -Encoding UTF8
+                $null = Set-Content -Path $TestScriptPath -Value $UpdatedContent -Encoding UTF8
                 Write-Verbose -Message "Created $TestScriptPath"
             }
             catch {
