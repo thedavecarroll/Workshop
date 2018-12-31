@@ -1,4 +1,6 @@
-﻿[CmdLetBinding()]
+﻿#Requires -module ActiveDirectory
+
+[CmdLetBinding()]
 param (
     [Parameter(Position = 0)]
     [string]$Domain = (Get-ADDomain).DNSroot,
@@ -63,7 +65,7 @@ if ($Domain -eq "Office365") {
     Write-Verbose -Message "Querying $Domain for Exchange Servers"
     $ExchangeServers = foreach ($Server in (Get-ADObject -Server $Domain -SearchBase $ADRootDSE.configurationNamingContext -Filter "objectClass -eq 'msExchExchangeServer'" -Verbose:$false) ) {
         try {
-            Get-ADComputer -Identity $Server.Name -Server $Domain -Properties ServicePrincipalName -Verbose:$false | Select-Object -ExpandProperty DNSHostName
+            Get-ADComputer -Identity $Server.Name -Server $Domain -Verbose:$false | Select-Object -ExpandProperty DNSHostName
         }
         catch { }
     }
