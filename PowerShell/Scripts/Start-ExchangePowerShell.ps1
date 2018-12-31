@@ -71,7 +71,7 @@ if ($Domain -eq "Office365") {
     }
     Write-Verbose -Message "Found $($ExchangeServers.count) Exchange Servers."
 
-    if ($ExchangeServerMatch) {}
+    if ($ExchangeServerMatch) {
         $FilterExchangeServers = $ExchangeServers.Where({$_ -match $ExchangeServerMatch})
         Write-Verbose -Message "Found $($FilterExchangeServers.count) Exchange Servers with names matching $ExchangeServerMatch."
     } else {
