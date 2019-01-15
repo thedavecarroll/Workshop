@@ -26,7 +26,7 @@ function Get-ADSchemaUpdates {
         Server = $RootDSE.dnsHostName
     }
 
-    #$AllSchemaUpdates = 
+    #$AllSchemaUpdates =
     Get-ADObject @SchemaParams | Select-Object -Property objectClass,Name,
         @{name='Created';expression={($_.whenCreated).Date.ToShortDateString()}},
         @{name='Modified';expression={($_.whenChanged).Date.ToShortDateString()}}
@@ -82,6 +82,7 @@ function Get-ADSchemaVersion {
         56 { $VersionName = 'Windows Server 2012' }
         69 { $VersionName = 'Windows Server 2012 R2' }
         87 { $VersionName = 'Windows Server 2016' }
+        88 { $VersionName = 'Windows Server 2019' }
     }
 
     [PSCustomObject]@{
@@ -122,6 +123,16 @@ function Get-ADSchemaExchVersion {
         '15303-15965-13236' = '2013 CU6'
         '15312-15965-13236' = '2013 CU7-9'
         '15317-16041-13236' = '2016 Preview'
+        '15317-16210-13236' = '2016 RTM'
+        '15323-16211-13236' = '2016 CU1'
+        '15325-16212-13236' = '2016 CU2'
+        '15326-16212-13236' = '2016 CU3'
+        '15326-16213-13236' = '2016 CU4-CU5'
+        '15330-16213-13236' = '2016 CU6'
+        '15332-16213-13236' = '2016 CU7-CU10'
+        '15332-16214-13236' = '2016 CU11'
+        '15332-16213-13236-Previw' = '2019 Preview'
+        '17000-16751-13236' = '2019 RTM'
     }
 
     if ($Server) {
@@ -250,7 +261,7 @@ function Get-ADSchemaLyncVersion {
         1007 { $VersionName = 'OCS 2007'}
         1008 { $VersionName = 'OCS 2007 R2'}
         1100 { $VersionName = 'Lync 2010'}
-        1150 { $VersionName = 'Lync 2013'}
+        1150 { $VersionName = 'Lync 2013/Skype 2015'}
     }
 
     [PSCustomObject]@{
