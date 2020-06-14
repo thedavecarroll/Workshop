@@ -1,0 +1,1 @@
+$HelpInfo = Invoke-WebRequest -Uri https://raw.githubusercontent.com/PowerShell/PowerShell/master/src/System.Management.Automation/help/HelpInfo.cs  | Select-Object -ExpandProperty Content

@@ -12,41 +12,6 @@ function Invoke-UpdateModule {
 
     begin {
 
-        function ConvertFrom-UpdateModuleVerbose {
-            param($Output)
-            $UpdateAction = $Output | Select-String -Pattern '^Checking|^Skipping|^Performing|installed successfully'
-            $UpdateObject = foreach ($Action in $UpdateAction) {
-                if ($Action -match 'Checking') {
-                    $Action -match "(?:^|\S|\s)'(\S+)'(?:\S|\s|$)" | Out-Null
-                    [PSCustomObject]@{
-                        Name = $Matches[1]
-                        CurrentVersion = $null
-                        UpdatedVersion = $null
-                        InstallState = $null
-                    }
-                }
-            }
-            foreach ($Module in $UpdateObject) {
-                $ModuleInfo = $UpdateAction.Where({$_ -match $Module.Name -And $_ -notmatch 'Checking'})
-                if ($ModuleInfo[0] -match 'Skipping') {
-                    $ModuleInfo[0] -match "(?:^|\S|\s)(\d+.*)(?:.$|\S|\s|$)" | Out-Null
-                    $Module.CurrentVersion = $Matches[1] -Replace ("$($Module.Name)|\s|.$",'')
-                    $Module.InstallState = 'Skipped'
-                } elseif ($ModuleInfo[0] -match 'Performing') {
-                    $UpdateInfo = $ModuleInfo[0]| Select-String -Pattern "(?:^|\S|\s)'(\S+)'(?:\S|\s|$)" -AllMatches
-                    $Module.CurrentVersion = $UpdateInfo.Matches[0].Groups[1].Value
-                    $Module.UpdatedVersion = $UpdateInfo.Matches[2].Groups[1].Value
-                    if ($ModuleInfo[1] -match 'installed successfully') {
-                        $Module.InstallState = 'Installed'
-                    } else {
-                        $Module.InstallState = 'Failed'
-                    }
-                }
-                $Module
-            }
-
-        }
-
         [void]$PSBoundParameters.Remove('Verbose')
 
         if ($PSBoundParameters.Name) {
@@ -61,10 +26,11 @@ function Invoke-UpdateModule {
 
         if ($PSBoundParameters) {
             if ($Modules) {
-                $UpdateModules = @()
+                #$UpdateModules = @()
                 foreach ($ModuleName in $Modules) {
                     try {
-                        $UpdateModules += Update-Module -Name $ModuleName @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
+                        $UpdateModule = Update-Module -Name $ModuleName @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
+                        ConvertFrom-UpdateModuleVerbose -Output $UpdateModule
                     }
                     catch {
                         Write-Warning -Message $_.ToString()
@@ -72,7 +38,11 @@ function Invoke-UpdateModule {
                 }
             } else {
                 try {
-                    $UpdateModules = Update-Module @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
+                    $AllModules = Get-Module -All
+                    foreach ($ModuleName in $AllModules.Name) {
+                        $UpdateModule = Update-Module @PSBoundParameters -ErrorAction Stop -Verbose 4>&1
+                        ConvertFrom-UpdateModuleVerbose -Output $UpdateModule
+                    }
                 }
                 catch {
                     Write-Warning -Message $_.ToString()
@@ -80,7 +50,10 @@ function Invoke-UpdateModule {
             }
         } else {
             try {
-                $UpdateModules = Update-Module -Verbose 4>&1
+                $AllModules = Get-InstalledModule
+                foreach ($ModuleName in $AllModules.Name) {
+                    ConvertFrom-UpdateModuleVerbose -Output ( Update-Module -Name $ModuleName -Verbose 4>&1 )
+                }
             }
             catch {
                 $PSCmdlet.ThrowTerminatingError($_)
